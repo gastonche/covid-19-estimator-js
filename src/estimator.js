@@ -53,8 +53,8 @@ function getImpact(input) {
 
 function getSevereImpact(impact) {
   return {
-    currentlyInfected: impact.currentlyInfected * 50,
-    infectionsByRequestedTime: impact.infectionsByRequestedTime * 50
+    currentlyInfected: impact.currentlyInfected * 5,
+    infectionsByRequestedTime: impact.infectionsByRequestedTime * 5
 
   };
 }
