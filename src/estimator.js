@@ -44,24 +44,35 @@ function getFactor({ timeToElapse, periodType = 'days' }) {
 function getImpact(input) {
   const factor = getFactor(input);
   const currentlyInfected = input.reportedCases * 10;
+  const infectionsByRequestedTime = currentlyInfected * (2 ** factor);
+  const severeCasesByRequestedTime = Math.floor(infectionsByRequestedTime * 0.15);
+  const hospitalBedsByRequestedTime = Math.ceil(input.totalHospitalBeds * 0.35)
+    - severeCasesByRequestedTime;
 
   return {
     currentlyInfected,
-    infectionsByRequestedTime: currentlyInfected * (2 ** factor)
+    infectionsByRequestedTime,
+    severeCasesByRequestedTime,
+    hospitalBedsByRequestedTime
   };
 }
 
-function getSevereImpact(impact) {
+function getSevereImpact(impact, input) {
+  const severeCasesByRequestedTime = impact.severeCasesByRequestedTime * 5;
+  const hospitalBedsByRequestedTime = Math.ceil(input.totalHospitalBeds * 0.35)
+    - severeCasesByRequestedTime;
+
   return {
     currentlyInfected: impact.currentlyInfected * 5,
-    infectionsByRequestedTime: impact.infectionsByRequestedTime * 5
-
+    infectionsByRequestedTime: impact.infectionsByRequestedTime * 5,
+    severeCasesByRequestedTime,
+    hospitalBedsByRequestedTime
   };
 }
 
 const covid19ImpactEstimator = (data) => {
   const impact = getImpact(data);
-  const severeImpact = getSevereImpact(impact);
+  const severeImpact = getSevereImpact(impact, data);
 
   return { data, impact, severeImpact };
 };
