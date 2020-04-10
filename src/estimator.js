@@ -48,7 +48,7 @@ function getImpact({ region, ...input }, mult = 1) {
   const infectionsByRequestedTime = currentlyInfected * (2 ** factor);
 
   const severeCasesByRequestedTime = Math.trunc(infectionsByRequestedTime * 0.15);
-  const hospitalBedsByRequestedTime = Math.ceil(input.totalHospitalBeds * 0.35)
+  const hospitalBedsByRequestedTime = Math.trunc(input.totalHospitalBeds * 0.35)
     - severeCasesByRequestedTime;
 
   const casesForICUByRequestedTime = Math.trunc(infectionsByRequestedTime * 0.05);
