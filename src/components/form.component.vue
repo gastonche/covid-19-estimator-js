@@ -144,7 +144,6 @@ export default {
     display: block;
     width: 300px;
     max-width: calc(100vw - 40px);
-    color: #fff;
     font-size: 15px;
     box-sizing: border-box;
     border: none;

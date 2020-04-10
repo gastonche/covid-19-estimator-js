@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     estimate(data) {
-      this.formData = data;
+      this.formData = {...data};
       this.report = estimate(data);
     }
   }
@@ -45,7 +45,7 @@ export default {
 </script>
 <style scoped>
 .main-page {
-  box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px 3px rgba(255, 255, 255, 0.1);
   max-height: calc(100vh - 40px);
   position: absolute;
   width: calc(100vw - 20px);
@@ -59,7 +59,7 @@ export default {
   padding: 10px;
   overflow: auto;
   transition: max-height 0.3s ease-out;
-  background: linear-gradient(45deg, #27c3f5, #27c3f5 20%, #fff 20%, #fff 85%, #27c3f5 85%)
+  background: linear-gradient(45deg, #27c3f5, #27c3f5 20%, #292541 20%, #292541 85%, #27c3f5 85%)
 }
 
 .main-page.no-result{
