@@ -42,19 +42,19 @@ function getDays({ timeToElapse, periodType = 'days' }) {
 
 function getImpact({ region, ...input }, mult = 1) {
   const days = getDays(input);
-  const factor = Math.floor(days / 3);
+  const factor = Math.trunc(days / 3);
 
   const currentlyInfected = input.reportedCases * 10 * mult;
   const infectionsByRequestedTime = currentlyInfected * (2 ** factor);
 
-  const severeCasesByRequestedTime = Math.floor(infectionsByRequestedTime * 0.15);
+  const severeCasesByRequestedTime = Math.trunc(infectionsByRequestedTime * 0.15);
   const hospitalBedsByRequestedTime = Math.ceil(input.totalHospitalBeds * 0.35)
     - severeCasesByRequestedTime;
 
-  const casesForICUByRequestedTime = Math.floor(infectionsByRequestedTime * 0.05);
-  const casesForVentilatorsByRequestedTime = Math.floor(infectionsByRequestedTime * 0.02);
+  const casesForICUByRequestedTime = Math.trunc(infectionsByRequestedTime * 0.05);
+  const casesForVentilatorsByRequestedTime = Math.trunc(infectionsByRequestedTime * 0.02);
 
-  const dollarsInFlight = Math.floor((infectionsByRequestedTime * region.avgDailyIncomeInUSD
+  const dollarsInFlight = Math.trunc((infectionsByRequestedTime * region.avgDailyIncomeInUSD
     * region.avgDailyIncomePopulation) / days);
 
   return {
