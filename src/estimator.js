@@ -24,7 +24,7 @@
         severeImpact: {} // your severe case estimation
     }
 */
-function getFactor({ timeToElapse, periodType = 'days' }) {
+function getDays({ timeToElapse, periodType = 'days' }) {
   let days;
   switch (periodType) {
     case 'weeks':
@@ -37,44 +37,38 @@ function getFactor({ timeToElapse, periodType = 'days' }) {
       days = timeToElapse;
       break;
   }
-
-  return Math.floor(days / 3);
+  return days;
 }
 
-function getImpact(input) {
-  const factor = getFactor(input);
-  const currentlyInfected = input.reportedCases * 10;
+function getImpact({ region, ...input }, mult = 1) {
+  const days = getDays(input);
+  const factor = Math.floor(days / 3);
+
+  const currentlyInfected = input.reportedCases * 10 * mult;
   const infectionsByRequestedTime = currentlyInfected * (2 ** factor);
   const severeCasesByRequestedTime = Math.floor(infectionsByRequestedTime * 0.15);
   const hospitalBedsByRequestedTime = Math.ceil(input.totalHospitalBeds * 0.35)
     - severeCasesByRequestedTime;
+  const casesForICUByRequestedTime = Math.floor(infectionsByRequestedTime * 0.05);
+  const casesForVentilatorsByRequestedTime = Math.floor(infectionsByRequestedTime * 0.02);
+  const dollarsInFlight = Math.floor((infectionsByRequestedTime * region.avgDailyIncomeInUSD
+    * region.avgDailyIncomePopulation) / days);
 
   return {
     currentlyInfected,
     infectionsByRequestedTime,
     severeCasesByRequestedTime,
-    hospitalBedsByRequestedTime
+    hospitalBedsByRequestedTime,
+    casesForICUByRequestedTime,
+    casesForVentilatorsByRequestedTime,
+    dollarsInFlight
   };
 }
 
-function getSevereImpact(impact, input) {
-  const severeCasesByRequestedTime = impact.severeCasesByRequestedTime * 5;
-  const hospitalBedsByRequestedTime = Math.ceil(input.totalHospitalBeds * 0.35)
-    - severeCasesByRequestedTime;
-
-  return {
-    currentlyInfected: impact.currentlyInfected * 5,
-    infectionsByRequestedTime: impact.infectionsByRequestedTime * 5,
-    severeCasesByRequestedTime,
-    hospitalBedsByRequestedTime
-  };
-}
-
-const covid19ImpactEstimator = (data) => {
-  const impact = getImpact(data);
-  const severeImpact = getSevereImpact(impact, data);
-
-  return { data, impact, severeImpact };
-};
+const covid19ImpactEstimator = (data) => ({
+  data,
+  impact: getImpact(data),
+  severeImpact: getImpact(data, 5)
+});
 
 export default covid19ImpactEstimator;
