@@ -46,11 +46,14 @@ function getImpact({ region, ...input }, mult = 1) {
 
   const currentlyInfected = input.reportedCases * 10 * mult;
   const infectionsByRequestedTime = currentlyInfected * (2 ** factor);
+
   const severeCasesByRequestedTime = Math.floor(infectionsByRequestedTime * 0.15);
   const hospitalBedsByRequestedTime = Math.ceil(input.totalHospitalBeds * 0.35)
     - severeCasesByRequestedTime;
+
   const casesForICUByRequestedTime = Math.floor(infectionsByRequestedTime * 0.05);
   const casesForVentilatorsByRequestedTime = Math.floor(infectionsByRequestedTime * 0.02);
+
   const dollarsInFlight = Math.floor((infectionsByRequestedTime * region.avgDailyIncomeInUSD
     * region.avgDailyIncomePopulation) / days);
 
